@@ -1,6 +1,7 @@
 package com.paozhuanyinyu.freshmember;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,8 @@ import paozhuanyinyu.com.freshmember.R;
 
 public class MainActivity extends AppCompatActivity {
     private SwitchView sb_switch;
+    private SwitchView sb_switch_notification;
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
         sb_switch = (SwitchView) findViewById(R.id.sb_switch);
+        sb_switch_notification = (SwitchView) findViewById(R.id.sb_switch_notification);
+
+
         sb_switch.setOpened(isAccessibilitySettingsOn(this));
         sb_switch.setOnStateChangedListener(new SwitchView.OnStateChangedListener(){
 
@@ -34,6 +40,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void toggleToOff(View view) {
                 sb_switch.toggleSwitch(false);
+            }
+        });
+        sp = getSharedPreferences("fresh_member", Context.MODE_PRIVATE);
+        sb_switch_notification.setOpened(sp.getBoolean("notification_switch",false));
+        sb_switch_notification.setOnStateChangedListener(new SwitchView.OnStateChangedListener() {
+            @Override
+            public void toggleToOn(View view) {
+                sb_switch_notification.toggleSwitch(true);
+                sp.edit().putBoolean("notification_switch",true).commit();
+                NotificationUtils.showNotification(MainActivity.this);
+            }
+
+            @Override
+            public void toggleToOff(View view) {
+                sb_switch_notification.toggleSwitch(false);
+                sp.edit().putBoolean("notification_switch",false).commit();
+                NotificationUtils.hideNotification(MainActivity.this);
             }
         });
     }

@@ -12,8 +12,7 @@
         android:background="#FFFFFF"
         android:paddingLeft="12dp"
         android:paddingRight="12dp"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="8dp">
+        >
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,10 +30,29 @@
     </RelativeLayout>
 
     <View
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="10dp"
         android:background="#F2F2F2"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="8dp"/>
+        />
+    <RelativeLayout
+        android:layout_width="368dp"
+        android:layout_height="60dp"
+        android:background="#FFFFFF"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="通知栏开关"/>
+
+        <com.paozhuanyinyu.freshmember.SwitchView
+            android:id="@+id/sb_switch_notification"
+            android:layout_width="72dip"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            />
+    </RelativeLayout>
 </LinearLayout>
