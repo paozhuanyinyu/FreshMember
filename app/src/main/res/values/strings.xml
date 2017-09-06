@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">FreshMember</string>
+    <string name="accessibility_service_description">打开开关，显示你当前界面的全限定类名</string>
+</resources>
