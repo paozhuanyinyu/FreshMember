@@ -1,11 +1,16 @@
 package com.paozhuanyinyu.freshmember;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v4.app.NotificationCompat;
+import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import paozhuanyinyu.com.freshmember.R;
 
@@ -14,9 +19,10 @@ import paozhuanyinyu.com.freshmember.R;
  */
 
 public class NotificationUtils {
+	private static final String MY_ACTION = "com.notifications.intent.action.ButtonClick";
 	private static NotificationCompat.Builder mBuilder;
 	private static NotificationManager mNotificationManager;
-	public static void showNotification(Context context){
+	public static void showNotification(final Context context, final String contentText){
 		//创建一个NotificationManager的引用
 		String ns = Context.NOTIFICATION_SERVICE;
 		mNotificationManager = (NotificationManager)context.getSystemService(ns);
@@ -67,23 +73,64 @@ public class NotificationUtils {
 		* //如果要使用此字段，必须从1开始
 		* notification.iconLevel = ; //
 		*/
+
 		//设置通知的事件消息
-		CharSequence contentTitle = "My Notification"; //通知栏标题
-		CharSequence contentText = "Hello World!"; //通知栏内容
+		CharSequence contentTitle = "当前界面的全限定类名"; //通知栏标题
 		Intent notificationIntent = new Intent(context,MainActivity.class); //点击该通知后要跳转的Activity
 		PendingIntent contentIntent = PendingIntent.getActivity(context,0,notificationIntent,0);
+		RemoteViews view_custom = new RemoteViews(context.getPackageName(), R.layout.notification);
+		view_custom.setImageViewResource(R.id.image,R.mipmap.ic_launcher_round);
+		view_custom.setTextViewText(R.id.content,contentText);
+		view_custom.setTextViewText(R.id.btn,"复制");
+		PendingIntent pendButtonIntent = getPendingIntent(context, contentText);
+		view_custom.setOnClickPendingIntent(R.id.btn, pendButtonIntent);
 
-		mBuilder.setContentTitle(contentTitle);
-		mBuilder.setContentText(contentText);
+		mBuilder.setCustomContentView(view_custom);
 		mBuilder.setContentIntent(contentIntent);
+		mBuilder.setOngoing(true);
+
 		//把Notification传递给 NotificationManager
 		mNotificationManager.notify(0,mBuilder.build());
 	}
+
+	private static PendingIntent getPendingIntent(Context context, String contentText) {
+		BroadcastReceiver onClickReceiver = new BroadcastReceiver() {
+
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				if (intent.getAction().equals(MY_ACTION)) {
+					//获取剪贴板管理器：
+					ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+					// 创建普通字符型ClipData
+					ClipData mClipData = ClipData.newPlainText("Label", intent.getStringExtra("content"));
+					// 将ClipData内容放到系统剪贴板里。
+					cm.setPrimaryClip(mClipData);
+					Toast.makeText(context,"已复制到粘贴板",Toast.LENGTH_SHORT).show();
+				}
+			}
+		};
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(MY_ACTION);
+		context.registerReceiver(onClickReceiver, filter);
+		Intent buttonIntent = new Intent(MY_ACTION);
+		buttonIntent.putExtra("content",contentText);
+		int id = (int)System.currentTimeMillis() / 10000;
+		return PendingIntent.getBroadcast(context, id, buttonIntent, 0);
+	}
+
 	public static void hideNotification(Context context){
 		mNotificationManager.cancel(0);
 	}
-	public static void updateNotification(){
-		mBuilder.setContentText("Hello,Kotlin!");
-		mNotificationManager.notify(0,mBuilder.build());
+	public static void updateNotification(Context context,String contentText){
+		if(mBuilder==null||mNotificationManager==null){
+			showNotification(context,contentText);
+		}else{
+			PendingIntent pendButtonIntent = getPendingIntent(context, contentText);
+			mBuilder.getContentView().setOnClickPendingIntent(R.id.btn,pendButtonIntent);
+			mBuilder.getContentView().setTextViewText(R.id.content,contentText);
+			mBuilder.setCustomContentView(mBuilder.getContentView());
+			mNotificationManager.notify(0,mBuilder.build());
+		}
+
 	}
 }
