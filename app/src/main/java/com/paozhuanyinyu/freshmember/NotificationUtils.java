@@ -3,12 +3,13 @@ package com.paozhuanyinyu.freshmember;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
-import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -78,43 +79,45 @@ public class NotificationUtils {
 		CharSequence contentTitle = "当前界面的全限定类名"; //通知栏标题
 		Intent notificationIntent = new Intent(context,MainActivity.class); //点击该通知后要跳转的Activity
 		PendingIntent contentIntent = PendingIntent.getActivity(context,0,notificationIntent,0);
-		RemoteViews view_custom = new RemoteViews(context.getPackageName(), R.layout.notification);
-		view_custom.setImageViewResource(R.id.image,R.mipmap.ic_launcher_round);
-		view_custom.setTextViewText(R.id.content,contentText);
-		view_custom.setTextViewText(R.id.btn,"复制");
+		RemoteViews view_custom = getRemoteViews(context, contentText);
+
 		PendingIntent pendButtonIntent = getPendingIntent(context, contentText);
 		view_custom.setOnClickPendingIntent(R.id.btn, pendButtonIntent);
 
 		mBuilder.setCustomContentView(view_custom);
 		mBuilder.setContentIntent(contentIntent);
 		mBuilder.setOngoing(true);
-
 		//把Notification传递给 NotificationManager
 		mNotificationManager.notify(0,mBuilder.build());
 	}
 
+	@NonNull
+	private static RemoteViews getRemoteViews(Context context, String contentText) {
+		RemoteViews view_custom = new RemoteViews(context.getPackageName(), R.layout.notification);
+		view_custom.setTextViewText(R.id.content,contentText);
+		return view_custom;
+	}
+
 	private static PendingIntent getPendingIntent(Context context, String contentText) {
+		final int id = (int)System.currentTimeMillis();
 		BroadcastReceiver onClickReceiver = new BroadcastReceiver() {
 
 			@Override
 			public void onReceive(Context context, Intent intent) {
-				if (intent.getAction().equals(MY_ACTION)) {
+				if (intent.getAction().equals(MY_ACTION + "_" + id)) {
 					//获取剪贴板管理器：
 					ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-					// 创建普通字符型ClipData
-					ClipData mClipData = ClipData.newPlainText("Label", intent.getStringExtra("content"));
-					// 将ClipData内容放到系统剪贴板里。
-					cm.setPrimaryClip(mClipData);
-					Toast.makeText(context,"已复制到粘贴板",Toast.LENGTH_SHORT).show();
+					cm.setText(intent.getStringExtra("content"));
+					Log.d("NotificationUtils","content: " + intent.getStringExtra("content"));
+					Toast.makeText(context,"已复制到粘贴板: " + intent.getStringExtra("content"),Toast.LENGTH_SHORT).show();
 				}
 			}
 		};
 		IntentFilter filter = new IntentFilter();
-		filter.addAction(MY_ACTION);
+		filter.addAction(MY_ACTION + "_" + id);
 		context.registerReceiver(onClickReceiver, filter);
-		Intent buttonIntent = new Intent(MY_ACTION);
+		Intent buttonIntent = new Intent(MY_ACTION + "_" + id);
 		buttonIntent.putExtra("content",contentText);
-		int id = (int)System.currentTimeMillis() / 10000;
 		return PendingIntent.getBroadcast(context, id, buttonIntent, 0);
 	}
 
@@ -125,10 +128,10 @@ public class NotificationUtils {
 		if(mBuilder==null||mNotificationManager==null){
 			showNotification(context,contentText);
 		}else{
+			RemoteViews remoteViews = getRemoteViews(context,contentText);
 			PendingIntent pendButtonIntent = getPendingIntent(context, contentText);
-			mBuilder.getContentView().setOnClickPendingIntent(R.id.btn,pendButtonIntent);
-			mBuilder.getContentView().setTextViewText(R.id.content,contentText);
-			mBuilder.setCustomContentView(mBuilder.getContentView());
+			remoteViews.setOnClickPendingIntent(R.id.btn, pendButtonIntent);
+			mBuilder.setCustomContentView(remoteViews);
 			mNotificationManager.notify(0,mBuilder.build());
 		}
 

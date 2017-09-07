@@ -12,27 +12,20 @@
         android:src="@mipmap/ic_launcher_round"
         android:layout_gravity="center_vertical" />
 
-    <LinearLayout
-        android:layout_centerInParent="true"
+    <TextView
+        android:id="@+id/content"
+        android:textSize="12sp"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:textColor="@android:color/black"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/content"
-            android:textSize="12sp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textColor="@android:color/black"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
-
-
+        android:layout_height="match_parent"/>
     <Button
         android:id="@+id/btn"
+        android:text="复制"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
