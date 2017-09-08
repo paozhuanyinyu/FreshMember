@@ -122,7 +122,9 @@ public class NotificationUtils {
 	}
 
 	public static void hideNotification(Context context){
-		mNotificationManager.cancel(0);
+		if(mNotificationManager!=null){
+			mNotificationManager.cancel(0);
+		}
 	}
 	public static void updateNotification(Context context,String contentText){
 		if(mBuilder==null||mNotificationManager==null){

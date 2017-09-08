@@ -24,17 +24,46 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        final ScreenManager screenManager = ScreenManager.getInstance(MainActivity.this);
+        ScreenBroadcastListener listener = new ScreenBroadcastListener(this);
+        listener.registerListener(new ScreenBroadcastListener.ScreenStateListener() {
+            @Override
+            public void onScreenOn() {
+                Log.d("MainActivity","onScreenOn");
+                screenManager.finishActivity();
+            }
+
+            @Override
+            public void onScreenOff() {
+                Log.d("MainActivity","onScreenOff");
+                screenManager.startActivity();
+            }
+        });
         initView();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        sb_switch.setOpened(isAccessibilitySettingsOn(this));
+        if(sp == null){
+            sp = getSharedPreferences("fresh_member", Context.MODE_PRIVATE);
+        }
+        if((isAccessibilitySettingsOn(this) && !sb_switch.isOpened())  || (!isAccessibilitySettingsOn(this) && sb_switch.isOpened())){
+            sb_switch.setOpened(isAccessibilitySettingsOn(this));
+        }
+        if((isAccessibilitySettingsOn(this)&&sp.getBoolean("notification_switch",false) && !sb_switch_notification.isOpened())  || (!(isAccessibilitySettingsOn(this)&&sp.getBoolean("notification_switch",false)) && sb_switch_notification.isOpened())){
+            sb_switch_notification.setOpened(isAccessibilitySettingsOn(this)&&sp.getBoolean("notification_switch",false));
+        }
 
-        sb_switch_notification.setOpened(isAccessibilitySettingsOn(this)&&sp.getBoolean("notification_switch",false));
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent launcherIntent =new Intent(Intent.ACTION_MAIN);
+        launcherIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        launcherIntent.addCategory(Intent.CATEGORY_HOME);
+        startActivity(launcherIntent);
+    }
     private void initView() {
         sb_switch = (SwitchView) findViewById(R.id.sb_switch);
         sb_switch_notification = (SwitchView) findViewById(R.id.sb_switch_notification);
