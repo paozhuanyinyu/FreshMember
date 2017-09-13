@@ -7,11 +7,14 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
+
+import java.lang.reflect.Method;
 
 import paozhuanyinyu.com.freshmember.R;
 
@@ -109,6 +112,7 @@ public class NotificationUtils {
 					ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
 					cm.setText(intent.getStringExtra("content"));
 					Log.d("NotificationUtils","content: " + intent.getStringExtra("content"));
+					collapseStatusBar(context);
 					Toast.makeText(context,"已复制到粘贴板: " + intent.getStringExtra("content"),Toast.LENGTH_SHORT).show();
 				}
 			}
@@ -120,7 +124,21 @@ public class NotificationUtils {
 		buttonIntent.putExtra("content",contentText);
 		return PendingIntent.getBroadcast(context, id, buttonIntent, 0);
 	}
+	public static void collapseStatusBar(Context context) {
+		try {
+			Object statusBarManager = context.getSystemService("statusbar");
+			Method collapse;
 
+			if (Build.VERSION.SDK_INT <= 16) {
+				collapse = statusBarManager.getClass().getMethod("collapse");
+			} else {
+				collapse = statusBarManager.getClass().getMethod("collapsePanels");
+			}
+			collapse.invoke(statusBarManager);
+		} catch (Exception localException) {
+			localException.printStackTrace();
+		}
+	}
 	public static void hideNotification(Context context){
 		if(mNotificationManager!=null){
 			mNotificationManager.cancel(0);
