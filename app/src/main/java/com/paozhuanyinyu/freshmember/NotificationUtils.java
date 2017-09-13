@@ -26,13 +26,14 @@ public class NotificationUtils {
 	private static final String MY_ACTION = "com.notifications.intent.action.ButtonClick";
 	private static NotificationCompat.Builder mBuilder;
 	private static NotificationManager mNotificationManager;
+	//create a notification
 	public static void showNotification(final Context context, final String contentText){
 		//创建一个NotificationManager的引用
 		String ns = Context.NOTIFICATION_SERVICE;
 		mNotificationManager = (NotificationManager)context.getSystemService(ns);
 		// 定义Notification的各种属性
-		int icon = R.mipmap.ic_launcher; //通知图标
-		CharSequence tickerText = "Hello"; //状态栏显示的通知文本提示
+		int icon = R.mipmap.ic_launcher; //notification icon
+		CharSequence tickerText = "the class name of current activity"; //状态栏显示的通知文本提示
 		long when = System.currentTimeMillis(); //通知产生的时间，会在通知信息里显示
 		//用上面的属性初始化 Nofification
 		mBuilder = new NotificationCompat.Builder(context);
@@ -79,7 +80,7 @@ public class NotificationUtils {
 		*/
 
 		//设置通知的事件消息
-		CharSequence contentTitle = "当前界面的全限定类名"; //通知栏标题
+//		CharSequence contentTitle = "当前界面的全限定类名"; //通知栏标题
 		Intent notificationIntent = new Intent(context,MainActivity.class); //点击该通知后要跳转的Activity
 		PendingIntent contentIntent = PendingIntent.getActivity(context,0,notificationIntent,0);
 		RemoteViews view_custom = getRemoteViews(context, contentText);
@@ -124,6 +125,7 @@ public class NotificationUtils {
 		buttonIntent.putExtra("content",contentText);
 		return PendingIntent.getBroadcast(context, id, buttonIntent, 0);
 	}
+	//hide the notification bar
 	public static void collapseStatusBar(Context context) {
 		try {
 			Object statusBarManager = context.getSystemService("statusbar");
@@ -139,11 +141,13 @@ public class NotificationUtils {
 			localException.printStackTrace();
 		}
 	}
+	//clear the notification
 	public static void hideNotification(Context context){
 		if(mNotificationManager!=null){
 			mNotificationManager.cancel(0);
 		}
 	}
+	//update the content of the notification
 	public static void updateNotification(Context context,String contentText){
 		if(mBuilder==null||mNotificationManager==null){
 			showNotification(context,contentText);

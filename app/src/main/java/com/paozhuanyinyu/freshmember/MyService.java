@@ -90,9 +90,9 @@ public class MyService  extends AccessibilityService{
         return super.onUnbind(intent);
     }
     private void getCurrentActivityName(AccessibilityEvent event) {
-//        if (event.getEventType() != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-//            return;
-//        }
+        if (event.getEventType() != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            return;
+        }
         try {
             String pkgName = event.getPackageName().toString();
             String className = event.getClassName().toString();
