@@ -36,7 +36,6 @@ public class OnePixelActivity extends AppCompatActivity {
 		window.setAttributes(attributes);
 	}
 	public static void actionToLiveActivity(Context pContext) {
-
 		Intent intent = new Intent(pContext, OnePixelActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		pContext.startActivity(intent);

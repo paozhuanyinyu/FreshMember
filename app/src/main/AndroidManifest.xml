@@ -10,7 +10,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
-        <activity android:name="com.paozhuanyinyu.freshmember.MainActivity" >
+        <activity
+            android:name="com.paozhuanyinyu.freshmember.MainActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -18,7 +21,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.paozhuanyinyu.freshmember.OnePixelActivity">
+        <activity
+            android:name="com.paozhuanyinyu.freshmember.OnePixelActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/one_pixel_style"
+            android:screenOrientation="portrait">
         </activity>
 
         <service
@@ -38,10 +45,6 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"></action>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </receiver>
-
-        <receiver android:name="com.paozhuanyinyu.freshmember.ScreenBroadcastListener">
-
         </receiver>
     </application>
 
