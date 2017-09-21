@@ -24,6 +24,9 @@
         <activity
             android:name="com.paozhuanyinyu.freshmember.OnePixelActivity"
             android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:finishOnTaskLaunch="false"
             android:theme="@style/one_pixel_style"
             android:screenOrientation="portrait">
         </activity>
