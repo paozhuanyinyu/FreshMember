@@ -1,9 +1,13 @@
 package com.paozhuanyinyu.freshmember;
 
 import android.accessibilityservice.AccessibilityService;
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.Service;
+import android.app.job.JobInfo;
+import android.app.job.JobParameters;
+import android.app.job.JobScheduler;
+import android.app.job.JobService;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +15,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
@@ -39,15 +42,23 @@ public class MyService  extends AccessibilityService{
             startService(new Intent(this, InnerService.class));
         }
     }
-    public  static class  InnerService extends Service {
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public  static class  InnerService extends JobService {
         @Override
-        public IBinder onBind(Intent intent) {
-            return null;
+        public boolean onStartJob(JobParameters jobParameters) {
+            return false;
         }
+
+        @Override
+        public boolean onStopJob(JobParameters jobParameters) {
+            return false;
+        }
+
 
         @Override
         public void onCreate() {
             super.onCreate();
+            startJobSheduler();
             //发送与KeepLiveService中ID相同的Notification，然后将其取消并取消自己的前台显示
             Notification.Builder builder = new Notification.Builder(this);
             builder.setSmallIcon(R.mipmap.ic_launcher);
@@ -62,6 +73,17 @@ public class MyService  extends AccessibilityService{
                 }
             }, 100);
 
+        }
+        public void startJobSheduler() {
+            try {
+                JobInfo.Builder builder = new JobInfo.Builder(1, new ComponentName(getPackageName(), MyService.class.getName()));
+                builder.setPeriodic(5);
+                builder.setPersisted(true);
+                JobScheduler jobScheduler = (JobScheduler) this.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                jobScheduler.schedule(builder.build());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
     @Override
