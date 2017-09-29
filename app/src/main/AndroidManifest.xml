@@ -49,6 +49,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".Receiver1"/>
+        <service android:name=".Service2" android:process=":alive"/>
+        <receiver android:name=".Receiver2" android:process=":alive"/>
     </application>
 
 </manifest>

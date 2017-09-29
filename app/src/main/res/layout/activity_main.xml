@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:layout_width="368dp"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="#FFFFFF"
         android:paddingLeft="12dp"
@@ -35,7 +35,7 @@
         android:background="#F2F2F2"
         />
     <RelativeLayout
-        android:layout_width="368dp"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="#FFFFFF"
         android:paddingLeft="12dp"

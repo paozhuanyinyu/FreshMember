@@ -42,8 +42,9 @@ public class MyService  extends AccessibilityService{
             startService(new Intent(this, InnerService.class));
         }
     }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public  static class  InnerService extends JobService {
+    public  static class InnerService extends JobService {
         @Override
         public boolean onStartJob(JobParameters jobParameters) {
             return false;
