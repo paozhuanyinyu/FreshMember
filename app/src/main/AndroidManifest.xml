@@ -21,16 +21,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name="com.paozhuanyinyu.freshmember.OnePixelActivity"
-            android:launchMode="singleInstance"
-            android:excludeFromRecents="true"
-            android:exported="false"
-            android:finishOnTaskLaunch="false"
-            android:theme="@style/one_pixel_style"
-            android:screenOrientation="portrait">
-        </activity>
-
         <service
             android:name="com.paozhuanyinyu.freshmember.MyService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
@@ -43,16 +33,6 @@
         </service>
         <service android:name="com.paozhuanyinyu.freshmember.MyService$InnerService"></service>
 
-        <receiver android:name="com.paozhuanyinyu.freshmember.BootBroadcastReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </receiver>
-
-        <receiver android:name=".Receiver1"/>
-        <service android:name=".Service2" android:process=":alive"/>
-        <receiver android:name=".Receiver2" android:process=":alive"/>
     </application>
 
 </manifest>

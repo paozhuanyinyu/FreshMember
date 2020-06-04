@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
 import paozhuanyinyu.com.freshmember.R;
 
 
@@ -24,21 +23,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final ScreenManager screenManager = ScreenManager.getInstance(MainActivity.this);
-        ScreenBroadcastListener listener = new ScreenBroadcastListener(this);
-        listener.registerListener(new ScreenBroadcastListener.ScreenStateListener() {
-            @Override
-            public void onScreenOn() {
-                Log.d("MainActivity","onScreenOn");
-                screenManager.finishActivity();
-            }
-
-            @Override
-            public void onScreenOff() {
-                Log.d("MainActivity","onScreenOff");
-                screenManager.startActivity();
-            }
-        });
         initView();
     }
 
